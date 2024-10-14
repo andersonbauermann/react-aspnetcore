@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActivityForm from "./components/ActivityForm";
 import ActivityList from "./components/ActivityList";
 
@@ -19,19 +19,28 @@ let initialState = [
 ];
 
 function App() {
-  const [activities, setActivities] = useState(initialState);
+  const [index, setIndex] = useState(0);
+  const [activities, setActivities] = useState([]);
+  const [activity, setActivity] = useState({ id: 0 });
 
-  function addActivity(event) {
-    event.preventDefault();
+  useEffect(() => {
+    activities.length <= 0
+      ? setIndex(1)
+      : setIndex(
+          Math.max.apply(
+            Math,
+            activities.map((ativ) => ativ.id)
+          ) + 1
+        );
+  }, [activities]);
 
-    const activity = {
-      id: document.getElementById("id").value,
-      priority: document.getElementById("priority").value,
-      title: document.getElementById("title").value,
-      description: document.getElementById("description").value
-    };
+  function addActivity(activ) {
+    setActivities([...activities, { ...activ, id: index }]);
+  }
 
-    setActivities([...activities, { ...activity }]);
+  function updateActivity(activ) {
+    setActivities(activities.map((item) => (item.id === activ.id ? activ : item)));
+    setActivity({ id: 0 });
   }
 
   function deleteActivity(id) {
@@ -39,10 +48,25 @@ function App() {
     setActivities([...filteredActivities]);
   }
 
+  function cancelActivity() {
+    setActivity({ id: 0 });
+  }
+
+  function setActivityToUpdate(id) {
+    const activity = activities.filter((activity) => activity.id === id);
+    setActivity(activity[0]);
+  }
+
   return (
     <>
-      <ActivityForm activities={activities} addActivity={addActivity} />
-      <ActivityList activities={activities} deleteActivity={deleteActivity} />
+      <ActivityForm
+        activities={activities}
+        selectedActivity={activity}
+        addActivity={addActivity}
+        updateActivity={updateActivity}
+        cancelActivity={cancelActivity}
+      />
+      <ActivityList activities={activities} deleteActivity={deleteActivity} setActivityToUpdate={setActivityToUpdate} />
     </>
   );
 }
