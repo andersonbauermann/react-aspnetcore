@@ -420,3 +420,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .gitignore
+appsettings.Development.json
