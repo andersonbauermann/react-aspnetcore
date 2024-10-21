@@ -1,4 +1,5 @@
-﻿using activityList_API.Models;
+﻿using activityList_API.Data;
+using activityList_API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace activityList_API.Controllers;
@@ -7,33 +8,55 @@ namespace activityList_API.Controllers;
 [Route("controller")]
 public class ActivityController : ControllerBase
 {
+    private readonly DataContext _context;
+
+    public ActivityController(DataContext context) => _context = context;
+
     [HttpGet]
-    public Activity Get()
+    public IEnumerable<Activity> Get()
     {
-        return new Activity();
+        return _context.Activities;
     } 
        
     [HttpGet("{id}")]
-    public string Get(int id)
+    public Activity Get(int id)
     {
-        return "meu endpoint";
+        return _context.Activities.FirstOrDefault(activity => activity.Id == id);
     } 
     
     [HttpPost]
-    public string Post()
+    public IEnumerable<Activity> Post(Activity activity)
     {
-        return "meu endpoint";
+        _context.Activities.Add(activity);
+
+        if (_context.SaveChanges() > 0)
+            return _context.Activities;
+
+        throw new InvalidOperationException("Erro: Não foi possível adicionar a atividade!");
     }
     
     [HttpPut]
-    public string Put()
+    public Activity Put(int id, Activity activity)
     {
-        return "meu endpoint";
+        if (activity.Id != id) throw new InvalidOperationException("Erro!");
+
+        _context.Update(activity);
+
+        if (_context.SaveChanges() > 0)
+            return _context.Activities.First(activity => activity.Id == id);
+
+        return new Activity();
     }
     
     [HttpDelete("{id}")]
-    public string Delete(int id)
+    public bool Delete(int id)
     {
-        return "meu endpoint";
+        var activity = _context.Activities.FirstOrDefault(activity => activity.Id == id);
+
+        if (activity is null) throw new InvalidOperationException("Eroo: Você está tentando excluir uma atividade inesistente!");
+
+        _context.Remove(activity);
+
+        return _context.SaveChanges() > 0;
     }
 }

@@ -421,3 +421,6 @@ yarn-error.log*
 
 .gitignore
 appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
