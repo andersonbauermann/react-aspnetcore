@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace activityList_API.Controllers;
 
 [ApiController]
-[Route("controller")]
+[Route("[controller]")]
 public class ActivityController : ControllerBase
 {
     private readonly DataContext _context;
@@ -25,17 +25,17 @@ public class ActivityController : ControllerBase
     } 
     
     [HttpPost]
-    public IEnumerable<Activity> Post(Activity activity)
+    public Activity Post(Activity activity)
     {
         _context.Activities.Add(activity);
 
         if (_context.SaveChanges() > 0)
-            return _context.Activities;
+            return activity;
 
         throw new InvalidOperationException("Erro: Não foi possível adicionar a atividade!");
     }
     
-    [HttpPut]
+    [HttpPut("{id}")]
     public Activity Put(int id, Activity activity)
     {
         if (activity.Id != id) throw new InvalidOperationException("Erro!");

@@ -2,50 +2,43 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import ActivityForm from "./components/ActivityForm";
 import ActivityList from "./components/ActivityList";
-
-let initialState = [
-  {
-    id: 1,
-    priority: "1",
-    title: "Título 1",
-    description: "AAA"
-  },
-  {
-    id: 2,
-    priority: "2",
-    title: "Título 2",
-    description: "BBB"
-  }
-];
+import api from "./api/activity";
 
 function App() {
-  const [index, setIndex] = useState(0);
   const [activities, setActivities] = useState([]);
   const [activity, setActivity] = useState({ id: 0 });
 
-  useEffect(() => {
-    activities.length <= 0
-      ? setIndex(1)
-      : setIndex(
-          Math.max.apply(
-            Math,
-            activities.map((ativ) => ativ.id)
-          ) + 1
-        );
-  }, [activities]);
+  const getAllActivities = async () => {
+    const response = await api.get("activity");
+    return response.data;
+  };
 
-  function addActivity(activ) {
-    setActivities([...activities, { ...activ, id: index }]);
+  useEffect(() => {
+    const getActivities = async () => {
+      const allActivities = await getAllActivities();
+      if (allActivities) setActivities(allActivities);
+    };
+    getActivities();
+  }, []);
+
+  async function addActivity(activ) {
+    const response = await api.post("activity", activ);
+    setActivities([...activities, response.data]);
   }
 
-  function updateActivity(activ) {
-    setActivities(activities.map((item) => (item.id === activ.id ? activ : item)));
+  async function updateActivity(activ) {
+    const response = await api.put(`activity/${activ.id}`, activ);
+    const { id } = response.data;
+    setActivities(activities.map((item) => (item.id === id ? response.data : item)));
     setActivity({ id: 0 });
   }
 
-  function deleteActivity(id) {
-    const filteredActivities = activities.filter((activity) => activity.id !== id);
-    setActivities([...filteredActivities]);
+  async function deleteActivity(id) {
+    const deleteSuccess = await api.delete(`activity/${id}`);
+    if (deleteSuccess) {
+      const filteredActivities = activities.filter((activity) => activity.id !== id);
+      setActivities([...filteredActivities]);
+    }
   }
 
   function cancelActivity() {
