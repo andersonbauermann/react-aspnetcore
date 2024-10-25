@@ -86,9 +86,9 @@ export default function ActivityForm(props) {
       </div>
       <div className="col-12">
         {activity.id === 0 ? (
-          <button className="btn btn-outline-secondary" type="submit">
+          <button className="btn btn-outline-success" type="submit">
             <i className="fas fa-plus me-2" />
-            Adicionar
+            Salvar
           </button>
         ) : (
           <>
@@ -97,7 +97,7 @@ export default function ActivityForm(props) {
               Salvar
             </button>
             <button className="btn btn-outline-danger ms-2" onClick={cancelEditActivity}>
-              <i className="fas fa-plus me-2" />
+              <i className="fa-solid fa-xmark me-2" />
               Cancelar
             </button>
           </>

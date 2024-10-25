@@ -8,7 +8,7 @@ export default function ActivityList(props) {
         <Activity
           key={activity.id}
           activity={activity}
-          deleteActivity={props.deleteActivity}
+          toggleConfirmModal={props.toggleConfirmModal}
           setActivityToUpdate={props.setActivityToUpdate}
         />
       ))}
