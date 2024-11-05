@@ -1,4 +1,4 @@
-﻿namespace activityList_API.Models;
+﻿namespace ActivityList.Domain.Entities;
 
 public enum Priority
 {

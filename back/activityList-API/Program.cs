@@ -1,4 +1,8 @@
-using activityList_API.Data;
+using ActivityList.Data.Context;
+using ActivityList.Data.Repositories;
+using ActivityList.Domain.Interfaces.Repositories;
+using ActivityList.Domain.Interfaces.Services;
+using ActivityList.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -10,6 +14,11 @@ var connectionString = configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<DataContext>(
     options => options.UseSqlite(connectionString)
 );
+
+builder.Services.AddScoped<IActivityRepository, ActivityRepository>();
+builder.Services.AddScoped<IGeneralRepository, GeneralRepository>();
+builder.Services.AddScoped<IActivityService, ActivityService>();
+
 builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                     {
