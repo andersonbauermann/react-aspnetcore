@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Activity(props) {
+export default function ItemActivity(props) {
   function labelPriority(priority) {
     switch (priority) {
       case "Baixa":
